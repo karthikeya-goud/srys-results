@@ -466,6 +466,7 @@ function collectStudents(bcode, semcode) {
         scores.push({ rollno, cgpa: students[branch][rollno].cgpa });
       }
     }
+    document.getElementById('text-name').textContent="CGPA";
   } else if (bcode != 0 && semcode == 0) {
     const boxes = document.querySelectorAll("#section-checkboxes input[type='checkbox']");
     const sections = [...boxes].filter(b => b.checked).map(b => b.value);
@@ -474,33 +475,45 @@ function collectStudents(bcode, semcode) {
         scores.push({ rollno, cgpa: students[bcode][rollno][semKey] });
       }
     }
+    document.getElementById('text-name').textContent="CGPA";
   } else if (bcode == 0 && semcode != 0) {
     for (const branch in students) {
       for (const rollno in students[branch]) {
+        if((rollno.startsWith('22'))&&(semcode==1 || semcode==2)) continue;
         scores.push({ rollno, cgpa: students[branch][rollno][semKey] });
       }
     }
+    document.getElementById('text-name').textContent="SGPA";
   } else {
     const boxes = document.querySelectorAll("#section-checkboxes input[type='checkbox']");
     const sections = [...boxes].filter(b => b.checked).map(b => b.value);
     for (const rollno in students[bcode]) {
+      if((rollno.startsWith('22'))&&(semcode==1 || semcode==2)) continue;
       if (sections.includes(students[bcode][rollno]["section"])) {
         scores.push({ rollno, cgpa: students[bcode][rollno][semKey] });
       }
     }
+    document.getElementById('text-name').textContent="SGPA";
   }
   renderTable(scores);
 }
 
 function renderTable(scores) {
   const tbody = document.getElementById("score-body");
-  tbody.innerHTML = "";
-  document.getElementById('search-rollno').value='';
+  document.getElementById('search-rollno').value = '';
+
   scores.sort((a, b) => b.cgpa - a.cgpa);
+
+  const fragment = document.createDocumentFragment();
+
   scores.forEach((student, idx) => {
-    const row = `<tr><td>${idx + 1}</td><td>${student.rollno}</td><td>${student.cgpa.toFixed(4)}</td></tr>`;
-    tbody.innerHTML += row;
+    const tr = document.createElement("tr");
+    tr.innerHTML = `<td>${idx + 1}</td><td>${student.rollno}</td><td>${student.cgpa.toFixed(4)}</td>`;
+    fragment.appendChild(tr);
   });
+
+  tbody.innerHTML = "";
+  tbody.appendChild(fragment);
 }
 
 function search_rollno(e) {
