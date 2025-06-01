@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>api_key=atob</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="shortcut icon" href="./public/favicon.ico">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="./src/js/generated_files/generated_branch.js"></script>
+    <script src="./src/js/generated_files/generated_marks.js"></script>
+    <script src="./src/js/generated_files/generated_students.js"></script>
+    <script src="./src/js/generated_files/generated_subjects.js"></script>
+    <script src="./src/js/generated_files/generated_tc.js"></script>
+    <style>
+        body{
+            background: black url("./public/A4.png") center / 20% auto no-repeat fixed;
+            color: white;
+        }
+        section{
+            height: 500px;
+        }
+        tr td{
+            background-color: transparent !important;
+            color: white !important;
+        }
+        #linechart{
+            height: 270px !important;
+        }
+        @media (max-width:576px){
+            body{
+                background: black url("./public/A4.png") center / 40% auto no-repeat fixed;
+            }
+        }
+    </style>
+    <script src="main.js"></script>
+</head>
+<body>
+    <header>
+        <h2 class="text-center">SRYS JNTU RESULTS R18</h2>
+        <div class="mt-2 text-center">
+            <div><span class="text-danger fw-bolder">drag me :)</span></div>
+            <div class="d-flex justify-content-center mt-2">
+                <div class="me-1">Marks</div>
+                <div class=""><input type="range" class="form-range" min="0" max="100" step="50" value="0" id="slider"></div>
+                <div class="ms-1">Analytics</div>
+            </div>
+        </div>
+    </header>
+    <section class="container">
+        <div id="jntuh-marks">
+            <div class="row">
+            <div class="col-lg-5">
+                <div class="input-group">
+                    <input type="text" class="form-control fs-4" placeholder="Enter RollNo" id="rollno" value="21VE1A66A4">
+                    <button class="btn btn-lg btn-primary" id="rollno-submit" type="button">Submit</button>
+                </div>
+                <div class="text-danger">
+                    <span id="rollno-errors"></span>
+                </div>
+                <div style="display: none;" id="student-information">
+                    <table class="table table-bordered rounded" id="studentinfoTable">
+                        <thead class="table-dark">
+                            <tr>
+                            <th>Rollno</th>
+                            <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-info" class="fs-5">
+                        </tbody>
+                    </table>
+
+                    <canvas id="linechart"></canvas>
+                    <div class="d-flex flex-wrap align-items-center mt-3">
+                        <span class="fw-bold me-2 fs-2">CGPA:</span>
+                        <span class="text-warning me-3 fw-bold fs-2" id="cgpa"></span>
+                        <span id="add-group" class="d-flex align-items-center flex-wrap"></span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-7" style="display: none;" id="student-marks">
+                <div id="score">
+                    <div class="input-group">
+                        <label for="year-sem" class="input-group-text bg-secondary">Select Year</label>
+                        <select class="form-select" id="year-sem">
+                        </select>
+                    </div>
+                    <div>
+                        <table class="table table-bordered text-white" id="resultTable rounded">
+                            <thead class="table-dark">
+                                <tr>
+                                <th class="d-lg-none d-md-none">Sub</th>
+                                <th class="d-lg-none d-md-none">Int</th>
+                                <th class="d-lg-none d-md-none">Ext</th>
+                                <th class="d-lg-none d-md-none">Tot</th>
+                                <th class="d-lg-none d-md-none">Grad</th>
+        
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Subject</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Internal</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">External</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Total</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultBody">
+                            </tbody>
+                        </table>
+                        <p class="fw-bold fs-2">SGPA :&nbsp;&nbsp;&nbsp;<span class="text-warning" id="sgpa"></span></p>
+                    </div>
+                </div>
+                <div id="estimate-score" style="display: none;height: 400px;">
+                    <h3>Estimate the Grades</h3>
+                    <div id="estimate-container">
+
+                    </div>
+                    <div>
+                        <button id="calculate-btn" class="btn btn-primary btn-100">Calculate</button>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-center">
+                        <div class="table-responsive-sm">
+                            <table id="estimate-table" style="display: none;" class="table table-bordered w-auto text-center">
+                                <thead class="table-dark" id="estimate-table-head"></thead>
+                                <tbody id="estimated-sgpa-score"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="analytics" style="display: none;">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div id="branch-list-div">
+                        <label for="select-branch" class="form-label">Select Branch</label>
+                        <select class="form-select" id="select-branch"></select>
+                    </div>
+                    <div class="mt-4">
+                        <label for="select-year-sem" class="form-label">Select Year-Sem</label>
+                        <select id="select-year-sem" class="form-select"></select>
+                    </div>
+                    <div class="mt-4" style="display: none;" id="section-container">
+                        <label for="">Select Section(s)</label>
+                        <div id="section-checkboxes" class="fs-3">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4"></div>
+                <div class="col-lg-4">
+                    <div>
+                        <input type="text" class="form-control mt-4" placeholder="serach rollno | GPA" id="search-rollno">
+                    </div>
+                    <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;">
+                        <table class="table table-borderedless" id="display-table">
+                            <thead class="table-dark">
+                            <tr class="fs-4">
+                                <th>Sno</th>
+                                <th>RollNo</th>
+                                <th >CGPA</th>
+                            </tr>
+                            </thead>
+                            <tbody id="score-body" class="fs-4"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="creator" style="display: none;" class="mt-4">
+            <h2 class="text-center mt-4">CREATED BY: &#8595;</h2>
+        </div>
+    </section>
+</body>
+</html>
