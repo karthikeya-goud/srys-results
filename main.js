@@ -5,11 +5,6 @@ const grades = { 10: "O", 9: "A+", 8: "A", 7: "B+", 6: "B", 5: "C", 0: "F" };
 const sem_number = 7;
 let linegraph = null;
 
-const students = JSON.parse(api_key(gstudents));
-const marks = JSON.parse(api_key(gmarks));
-const subjects = JSON.parse(api_key(gsubjects));
-const tc = JSON.parse(api_key(gtc));
-const branches = JSON.parse(api_key(gbranches));
 
 window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("rollno").addEventListener("input", rollno_input);
@@ -305,8 +300,16 @@ function calculate() {
   const rollno = document.getElementById("rollno").value.trim();
   const branch = parseInt(rollno.substring(6, 8));
   const sgpas = [];
-
-  for (let sem = 1; sem <= sem_number; sem++) {
+  let semstart;
+  let le=false;
+  if(rollno.startsWith("22")){
+    semstart=3;
+    le=true;
+  }else{
+    semstart=1;
+    le=false;
+  }
+  for (let sem = semstart; sem <= sem_number; sem++) {
     const semKey = `semester${sem}`;
     if (students[branch][rollno][semKey] !== 0) {
       sgpas.push(students[branch][rollno][semKey]);
@@ -339,10 +342,10 @@ function calculate() {
 
   thead.innerHTML = `<tr><th>Semester</th><th>SGPA</th></tr>`;
   const labels = [];
-
+  
   sgpas.forEach((sgpa, idx) => {
     const tr = document.createElement("tr");
-    const label = sem_numbering(`semester${idx + 1}`);
+    const label = sem_numbering(`semester${idx + 1+(le?2:0)}`);
     labels.push(label);
 
     tr.innerHTML = `<td>${label}</td><td>${sgpa.toFixed(4)}</td>`;
