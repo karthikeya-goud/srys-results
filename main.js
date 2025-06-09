@@ -29,9 +29,12 @@ function check_adjustCheckBox(){
   if(checkbox.checked){
     document.getElementById("block-2").style.display="block"
     document.getElementById("mixedgraph-block").style.display='block';
+    select_subject();
   }else{
     document.getElementById("block-2").style.display="none";
     document.getElementById("mixedgraph-block").style.display='none';
+    document.getElementById("gpa-scores").style.display="block";
+    document.getElementById("sub-scores").style.display="none";
   }
 }
 
