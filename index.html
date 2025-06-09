@@ -15,6 +15,7 @@
     <script src="./src/js/generated_files/generated_students.js"></script>
     <script src="./src/js/generated_files/generated_subjects.js"></script>
     <script src="./src/js/generated_files/generated_tc.js"></script>
+    <script src="./src/js/generated_files/generated_bssub.js"></script>
     <style>
         body{
             background: black url("./public/A4.png") center / 20% auto no-repeat fixed;
@@ -30,9 +31,20 @@
         #linechart{
             height: 270px !important;
         }
+        #bargraph,#mixedgraph{
+             width: 200px;
+            height: 300px;
+        }
         @media (max-width:576px){
             body{
                 background: black url("./public/A4.png") center / 40% auto no-repeat fixed;
+            }
+        }
+
+          @media (max-width: 600px) {
+            #bargraph,#mixedgraph {
+                width: 200px; 
+                height: 250px !important;
             }
         }
     </style>
@@ -135,6 +147,12 @@
         <div id="analytics" style="display: none;">
             <div class="row">
                 <div class="col-lg-4">
+                    <div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="sgss">
+                            <label for="sgss" class="form-check-label" > Show Graphs || Subjects</label>
+                        </div>
+                    </div>
                     <div id="branch-list-div">
                         <label for="select-branch" class="form-label">Select Branch</label>
                         <select class="form-select" id="select-branch"></select>
@@ -148,23 +166,68 @@
                         <div id="section-checkboxes" class="fs-3">
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-4"></div>
-                <div class="col-lg-4">
-                    <div>
-                        <input type="text" class="form-control mt-4" placeholder="search rollno | GPA" id="search-rollno">
+                    <div id="mixedgraph-block" class="mt-4" >
+                        <canvas id="mixedgraph"></canvas>
                     </div>
-                    <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;">
-                        <table class="table table-borderedless" id="display-table">
-                            <thead class="table-dark">
-                            <tr class="fs-4">
-                                <th>Sno</th>
-                                <th>RollNo</th>
-                                <th id="text-name">CGPA</th>
-                            </tr>
-                            </thead>
-                            <tbody id="score-body" class="fs-4"></tbody>
-                        </table>
+                </div>
+                <div class="col-lg-4 mt-4" id="block-2">
+                    <div>
+                        <label for="subjects-list-sem-wise" class="form-label">Select Subject</label>
+                        <select id="subjects-list-sem-wise" class="form-select"></select>
+                    </div>
+                    <div >
+                        <canvas id="piegraph" style="width: 200px; height: 200px;"></canvas>
+                    </div>
+                    <div class="mt-4">
+                        <canvas id="bargraph" style="width: 200px; height: 300px;"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-4">
+                    <div id="gpa-scores">
+                        <div>
+                        <label for="search-rollno" class="form-label">Search Rollno | GPA</label>
+                        <input type="text" class="form-control" placeholder="search rollno | GPA" id="search-rollno">
+                        </div>
+                        <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;">
+                            <table class="table table-borderedless" id="display-table">
+                                <thead class="table-dark">
+                                <tr class="fs-4">
+                                    <th>Rank</th>
+                                    <th>RollNo</th>
+                                    <th id="text-name">CGPA</th>
+                                </tr>
+                                </thead>
+                                <tbody id="score-body" class="fs-4"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sub-scores" style="display: none;">
+                        <div>
+                            <label for="select-grade" class="form-label">Select Grade</label>
+                            <select id="select-grade" class="form-select">
+                                <option value="10">O</option>
+                                <option value="9">A+</option>
+                                <option value="8">A</option>
+                                <option value="7">B+</option>
+                                <option value="6">B</option>
+                                <option value="5">C</option>
+                                <option value="0">F</option>
+                            </select>
+                        </div>
+                        <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;" id="display-table-subject">
+                            <table class="table table-borderedless">
+                                <thead class="table-dark">
+                                <tr class="fs-4">
+                                    <th>RollNo</th>
+                                    <th>Marks</th>
+                                </tr>
+                                </thead>
+                                <tbody id="score-body-subject" class="fs-4"></tbody>
+                            </table>
+                        </div>
+                        <div id="no-records" class="text-danger" style="display: none;">
+                            <span>No One With This Grade</span>
+                        </div>
                     </div>
                 </div>
             </div>
