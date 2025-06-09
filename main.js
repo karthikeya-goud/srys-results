@@ -485,9 +485,16 @@ function sec_checkbox_logic() {
   let sections = [];
   boxes.forEach(box => { if (box.checked) sections.push(box.value); });
   if (!sections.length) boxes.forEach(box => { box.checked = true; sections.push(box.value); });
-  select_subject();
+  helper();
 }
-
+function helper(){
+  let val=document.getElementById("subjects-list-sem-wise").value;
+  if(val==0){
+    display_scores();
+  }else{
+    select_subject();
+  }
+}
 function display_scores() {
   const branch = document.getElementById("select-branch").value;
   const semcode = document.getElementById("select-year-sem").value;
