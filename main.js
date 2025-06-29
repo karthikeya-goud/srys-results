@@ -243,7 +243,7 @@ function get_marks(rollno) {
   fsem.forEach(sem => {
     for (let obj in marks[branch][sem][rollno]) {
       if (marks[branch][sem][rollno][obj][3] === 0) {
-        scodes.push(obj);
+        scodes.push([sem_numbering(`semester${sem}`),obj]);
       }
     }
   });
@@ -251,7 +251,7 @@ function get_marks(rollno) {
   const cont = document.getElementById('estimate-container');
   cont.innerHTML = '';
 
-  scodes.forEach(scode => {
+  scodes.forEach(([sn,scode]) => {
     const row = document.createElement("div");
     row.className = "row mb-2 align-items-center";
 
@@ -263,11 +263,11 @@ function get_marks(rollno) {
 
     const fullName = document.createElement("span");
     fullName.className = "d-none d-md-inline";
-    fullName.textContent = subjects[scode]["name"][0];
+    fullName.textContent = `[ ${sn} ] `+ subjects[scode]["name"][0];
 
     const shortName = document.createElement("span");
     shortName.className = "d-inline d-md-none";
-    shortName.textContent = subjects[scode]["name"][1];
+    shortName.textContent = `[ ${sn} ] `+ subjects[scode]["name"][1];
 
     label.append(fullName, shortName);
     labelCol.appendChild(label);
@@ -322,10 +322,12 @@ function calculate() {
     semstart=1;
     le=false;
   }
+  let sem_colors=[]
   for (let sem = semstart; sem <= sem_number; sem++) {
     const semKey = `semester${sem}`;
     if (students[branch][rollno][semKey] !== 0) {
       sgpas.push(students[branch][rollno][semKey]);
+      sem_colors.push(false);
     } else {
       let sgpa = 0;
       let valid = true;
@@ -344,6 +346,7 @@ function calculate() {
         }
       }
       sgpas.push(valid ? parseFloat((sgpa / tc[branch][sem]).toFixed(4)) : 0);
+      sem_colors.push(true);
     }
   }
 
@@ -360,8 +363,7 @@ function calculate() {
     const tr = document.createElement("tr");
     const label = sem_numbering(`semester${idx + 1+(le?2:0)}`);
     labels.push(label);
-
-    tr.innerHTML = `<td>${label}</td><td>${sgpa.toFixed(4)}</td>`;
+    tr.innerHTML = `<td style='color:${sem_colors[idx]?"#ffc107 !important":""}'>${label}</td><td>${sgpa.toFixed(4)}</td>`;
     tbody.appendChild(tr);
   });
 
@@ -373,8 +375,8 @@ function calculate() {
   document.getElementById("cgpa").textContent = cgpa;
   per=cgpa>0?((cgpa-0.5)*10).toFixed(2)+" %":"0 %";
   document.getElementById("percentage").textContent = per;
-  tbody.innerHTML += `<tr><td>CGPA</td><td>${cgpa}</td>`;
-  tbody.innerHTML += `<tr><td>PER %</td><td>${per}</td>`;
+  tbody.innerHTML += `<tr><td style='color:#ffc107 !important'>CGPA</td><td>${cgpa}</td>`;
+  tbody.innerHTML += `<tr><td style='color:#ffc107 !important'>PER %</td><td>${per}</td>`;
   show_linechart(sgpas, labels);
 }
 
@@ -1200,8 +1202,9 @@ function show_barchart_sub(d){
 
 
 function modalchanged(){
-  const tbody = document.getElementById('modalTableBody');
-  tbody.innerHTML = '';
+  const table = document.getElementById('modal-table');
+  table.querySelectorAll("tbody").forEach(tbody=>tbody.remove());
+  const tbody = document.createElement("tbody");
   rollno=document.getElementById("rollno").value.trim();
   branch=parseInt(rollno.substring(6,8));
   sem=document.getElementById("year-sem").value;
@@ -1215,14 +1218,16 @@ function modalchanged(){
     tr.appendChild(td2);
     tbody.appendChild(tr);
   }
+  table.appendChild(tbody);
   const modal = new bootstrap.Modal(document.getElementById('tableModal'));
   modal.show();
 }
 
 
 function modalchangedA(){
-  const tbody = document.getElementById('modalTableBody');
-  tbody.innerHTML = '';
+  const table = document.getElementById('modal-table');
+  table.querySelectorAll("tbody").forEach(tbody=>tbody.remove());
+  const tbody = document.createElement("tbody");
   branch=document.getElementById("select-branch").value;
   sem=document.getElementById("select-year-sem").value;
   branch_sem_sub[branch][sem].map(subcode=>{
@@ -1235,6 +1240,7 @@ function modalchangedA(){
     tr.appendChild(td2);
     tbody.appendChild(tr);
   });
+  table.appendChild(tbody);
   const modal = new bootstrap.Modal(document.getElementById('tableModal'));
   modal.show();
 }
@@ -1242,13 +1248,25 @@ function modalchangedA(){
 
 
 function modalchangedB(){
-  const tbody = document.getElementById('modalTableBody');
-  tbody.innerHTML = '';
+  const table = document.getElementById('modal-table');
+  table.querySelectorAll("tbody").forEach(tbody=>tbody.remove());
   rollno=document.getElementById("rollno").value.trim();
   branch=parseInt(rollno.substring(6,8));
   for(let sem=1;sem<=sem_number;sem++){
+    let tbody=document.createElement("tbody");
+    let flag=true;
     for(let subcode in marks[branch][sem][rollno]){
       if(marks[branch][sem][rollno][subcode][3]==0){
+        if(flag){
+          let tr=document.createElement("tr");
+          let td=document.createElement("td");
+          td.textContent=sem_numbering(`semester${sem}`)
+          td.colSpan=3;
+          td.className="text-center";
+          tr.appendChild(td);
+          tbody.appendChild(tr);
+          flag=false;  
+        }
         const tr = document.createElement('tr');
         const td1 = document.createElement('td');
         const td2 = document.createElement('td');
@@ -1258,6 +1276,9 @@ function modalchangedB(){
         tr.appendChild(td2);
         tbody.appendChild(tr);
       }
+    }
+    if(!flag){
+      table.appendChild(tbody);
     }
   }
   const modal = new bootstrap.Modal(document.getElementById('tableModal'));
