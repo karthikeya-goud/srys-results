@@ -281,7 +281,7 @@ function get_marks(rollno) {
     [0, 5, 6, 7, 8, 9, 10].forEach(val => {
       const option = document.createElement("option");
       option.value = val;
-      option.textContent = val;
+      option.textContent = `${val}    [${grades[val]}]`;
       select.appendChild(option);
     });
 
