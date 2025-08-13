@@ -56,6 +56,7 @@
     <script src="main.js"></script>
 </head>
 <body>
+    <marquee behavior="" direction="">Updated on 13-AUG-2025</marquee>
     <header>
         <h2 class="text-center">SRYS JNTU RESULTS R18</h2>
         <div class="mt-2 text-center">
@@ -95,7 +96,7 @@
             <div class="row">
             <div class="col-lg-5">
                 <div class="input-group">
-                    <input type="text" class="form-control fs-4" placeholder="Enter RollNo" id="rollno">
+                    <input type="text" class="form-control fs-4" placeholder="Enter RollNo" id="rollno" autocomplete="on" name="rollno">
                     <button class="btn btn-lg btn-primary" id="rollno-submit" type="button">Submit</button>
                 </div>
                 <div class="text-danger">
@@ -224,7 +225,7 @@
                     <div id="gpa-scores">
                         <div>
                         <label for="search-rollno" class="form-label">Search Rollno | GPA</label>
-                        <input type="text" class="form-control" placeholder="search rollno | GPA" id="search-rollno">
+                        <input type="text" class="form-control" placeholder="search rollno | GPA" id="search-rollno" autocomplete="on">
                         </div>
                         <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;">
                             <table class="table table-borderedless" id="display-table">
