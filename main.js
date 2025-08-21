@@ -345,11 +345,10 @@ function calculate() {
           break;
         }
       }
-      sgpas.push(valid ? parseFloat(Math.round(sgpa / tc[branch][sem],2).toFixed(2)) : 0);
+      sgpas.push(valid ? parseFloat((sgpa / tc[branch][sem]).toFixed(2)) : 0);
       sem_colors.push(true);
     }
   }
-
   const tbody = document.getElementById('estimated-sgpa-score');
   const thead = document.getElementById("estimate-table-head");
   tbody.innerHTML = '';
@@ -373,14 +372,13 @@ function calculate() {
     total=0;
   }else{
     for(let i=is_le?2:0;i<sem_number;i++){
-      console.log(total);
       total+=sgpas[i]*tc[branch][i+1]
     }
   }
-  console.log(total);
+  
   const cgpa = rollno.startsWith("22")
-    ? Math.round(total / 123,2).toFixed(2)
-    : Math.round(total / 160,2).toFixed(2);
+    ? (total / 123).toFixed(2)
+    : (total / 160).toFixed(2);
 
   document.getElementById("cgpa").textContent = cgpa;
   per=cgpa>0?((cgpa-0.5)*10).toFixed(2)+" %":"0 %";
