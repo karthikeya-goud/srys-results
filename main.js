@@ -371,7 +371,8 @@ function calculate() {
   if(sgpas.includes(0)){
     total=0;
   }else{
-    for(let i=is_le?2:0;i<sem_number;i++){
+    let end=is_le?2:0;
+    for(let i=0;i<sem_number-end;i++){
       total+=sgpas[i]*tc[branch][i+1]
     }
   }
@@ -379,6 +380,8 @@ function calculate() {
   const cgpa = rollno.startsWith("22")
     ? (total / 123).toFixed(2)
     : (total / 160).toFixed(2);
+  
+
 
   document.getElementById("cgpa").textContent = cgpa;
   per=cgpa>0?((cgpa-0.5)*10).toFixed(2)+" %":"0 %";
