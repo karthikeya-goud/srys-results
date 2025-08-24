@@ -373,7 +373,7 @@ function calculate() {
   }else{
     let end=is_le?2:0;
     for(let i=0;i<sem_number-end;i++){
-      total+=sgpas[i]*tc[branch][i+1]
+      total+=sgpas[i]*tc[branch][i+1+end]
     }
   }
   
@@ -1295,4 +1295,5 @@ function modalchangedB(){
   }
   const modal = new bootstrap.Modal(document.getElementById('tableModal'));
   modal.show();
+
 }
