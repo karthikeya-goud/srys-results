@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>api_key=atob</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link rel="shortcut icon" href="./public/favicon.ico">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+    <script src="./src/js/generated_files/generated_branch.js"></script>
+    <script src="./src/js/generated_files/generated_marks.js"></script>
+    <script src="./src/js/generated_files/generated_students.js"></script>
+    <script src="./src/js/generated_files/generated_subjects.js"></script>
+    <script src="./src/js/generated_files/generated_tc.js"></script>
+    <script src="./src/js/generated_files/generated_bssub.js"></script>
+    <style>
+        body{
+            background: black url("./public/A4.png") center / 20% auto no-repeat fixed;
+            color: white;
+        }
+        section{
+            height: 500px;
+        }
+        tr td{
+            background-color: transparent !important;
+            color: white !important;
+        }
+        #linechart{
+            height: 270px !important;
+        }
+        #piegraph{
+            height: 200px !important;
+        }
+        #bargraph,#mixedgraph{
+             width: 100% !important;
+            height: 300px !important;
+        }
+
+
+        @media (max-width:576px){
+            body{
+                background: black url("./public/A4.png") center / 40% auto no-repeat fixed;
+            }
+        }
+
+          @media (max-width: 600px) {
+            #bargraph,#mixedgraph,#piegraph {
+                height: 250px !important;
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+    <marquee behavior="" direction="">Updated on 04-SEPT-2025</marquee>
+    <header>
+        <h2 class="text-center">SRYS JNTU RESULTS R18</h2>
+        <div class="mt-2 text-center">
+            <div><span class="text-danger fw-bolder">drag me :)</span></div>
+            <div class="d-flex justify-content-center mt-2">
+                <div class="me-1">Marks</div>
+                <div class=""><input type="range" class="form-range" min="0" max="100" step="50" value="0" id="slider"></div>
+                <div class="ms-1">Analytics</div>
+            </div>
+        </div>
+    </header>
+    <section class="container">
+        <div class="modal fade" id="tableModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content bg-dark text-white">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="tableModalLabel">Subject Names</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-striped table-bordered table-dark" id="modal-table">
+                            <thead>
+                                <tr>
+                                    <td>Short Name</td>
+                                    <td>Full Name</td>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="jntuh-marks">
+            <div class="row">
+            <div class="col-lg-5">
+                <div class="input-group">
+                    <input type="text" class="form-control fs-4" placeholder="Enter RollNo" id="rollno" autocomplete="on" name="rollno">
+                    <button class="btn btn-lg btn-primary" id="rollno-submit" type="button">Submit</button>
+                </div>
+                <div class="text-danger">
+                    <span id="rollno-errors"></span>
+                </div>
+                <div style="display: none;" id="student-information">
+                    <table class="table table-bordered rounded" id="studentinfoTable">
+                        <thead class="table-dark">
+                            <tr>
+                            <th>Rollno</th>
+                            <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-info" class="fs-5">
+                        </tbody>
+                    </table>
+
+                    <canvas id="linechart"></canvas>
+                    <div>
+                        <span class="fw-bold me-2 fs-3">CGPA:</span>
+                        <span class="text-warning me-3 fw-bold fs-3" id="cgpa"></span>
+                    </div>
+                    <div>
+                        <span class="fw-bold me-2 fs-3">PERCENTAGE:</span>
+                        <span class="text-warning me-3 fw-bold fs-3" id="percentage"></span>
+                    </div>
+                    <div>
+                        <span class="fw-bold me-2 fs-3">CLASS AWARDED:</span>
+                        <span class="text-warning me-3 fw-bold fs-3" id="class-awarded"></span>
+                    </div>
+                    <div>
+                        <span id="add-group" class="me-2 fs-4 fw-bold"></span>
+                    </div>
+
+                </div>
+            </div>
+            <div class="col-lg-7" style="display: none;" id="student-marks">
+                <div id="score">
+                    <div class="input-group mb-3">
+                        <label class="input-group-text bg-secondary" for="year-sem">Select Year</label>
+                        <select class="form-select" id="year-sem">
+                        </select>
+                        <button class="btn btn-primary" type="button" id="openModalBtn">Subjects ?</button>
+                    </div>
+                    <div>
+                        <table class="table table-bordered text-white" id="resultTable rounded">
+                            <thead class="table-dark">
+                                <tr>
+                                <th class="d-lg-none d-md-none">Sub</th>
+                                <th class="d-lg-none d-md-none">Int</th>
+                                <th class="d-lg-none d-md-none">Ext</th>
+                                <th class="d-lg-none d-md-none">Tot</th>
+                                <th class="d-lg-none d-md-none">Grad</th>
+        
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Subject</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Internal</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">External</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Total</th>
+                                <th class="d-none d-lg-table-cell d-md-table-cell">Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultBody">
+                            </tbody>
+                        </table>
+                        <p class="fw-bold fs-2">SGPA :&nbsp;&nbsp;&nbsp;<span class="text-warning" id="sgpa"></span></p>
+                    </div>
+                </div>
+                <div id="estimate-score" style="display: none;height: 400px;">
+                    <h3>Estimate the Grades</h3>
+                    <button class="btn btn-primary" type="button" id="openModalBtnB">Subjects ?</button>
+                    <div id="estimate-container">
+                    </div>
+                    <div>
+                        <button id="calculate-btn" class="btn btn-primary btn-100">Calculate</button>
+                    </div>
+                    <div class="mt-4 d-flex justify-content-center">
+                        <div class="table-responsive-sm">
+                            <table id="estimate-table" style="display: none;" class="table table-bordered w-auto text-center">
+                                <thead class="table-dark" id="estimate-table-head"></thead>
+                                <tbody id="estimated-sgpa-score"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="analytics" style="display: none;">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div>
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="sgss">
+                            <label for="sgss" class="form-check-label" > Show Graphs || Subjects</label>
+                        </div>
+                    </div>
+                    <div id="branch-list-div">
+                        <label for="select-branch" class="form-label">Select Branch</label>
+                        <select class="form-select" id="select-branch"></select>
+                    </div>
+                    <div class="mt-4">
+                        <label for="select-year-sem" class="form-label">Select Year-Sem</label>
+                        <select id="select-year-sem" class="form-select"></select>
+                    </div>
+                    <div class="mt-4" style="display: none;" id="section-container">
+                        <label for="">Select Section(s)</label>
+                        <div id="section-checkboxes" class="fs-3">
+                        </div>
+                    </div>
+                    <div id="mixedgraph-block" class="mt-4" >
+                        <canvas id="mixedgraph"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-4" id="block-2">
+                    <div>
+                        <label for="subjects-list-sem-wise" class="form-label">Select Subject</label>
+                        <div class="input-group">
+                            <select id="subjects-list-sem-wise" class="form-select"></select>
+                            <button class="btn btn-primary" type="button" id="openModalBtnA" disabled>Subjects ?</button>
+                        </div>
+                    </div>
+                    <div >
+                        <canvas id="piegraph" style="width: 200px; height: 200px;"></canvas>
+                    </div>
+                    <div class="mt-4">
+                        <canvas id="bargraph" style="width: 200px; height: 300px;"></canvas>
+                    </div>
+                </div>
+                <div class="col-lg-4 mt-4">
+                    <div id="gpa-scores">
+                        <div>
+                        <label for="search-rollno" class="form-label">Search Rollno | GPA</label>
+                        <input type="text" class="form-control" placeholder="search rollno | GPA" id="search-rollno" autocomplete="on">
+                        </div>
+                        <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;">
+                            <table class="table table-borderedless" id="display-table">
+                                <thead class="table-dark">
+                                <tr class="fs-4">
+                                    <th>Rank</th>
+                                    <th>RollNo</th>
+                                    <th id="text-name">CGPA</th>
+                                </tr>
+                                </thead>
+                                <tbody id="score-body" class="fs-4"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="sub-scores" style="display: none;">
+                        <div>
+                            <label for="select-grade" class="form-label">Select Grade</label>
+                            <select id="select-grade" class="form-select">
+                                <option value="10">O</option>
+                                <option value="9">A+</option>
+                                <option value="8">A</option>
+                                <option value="7">B+</option>
+                                <option value="6">B</option>
+                                <option value="5">C</option>
+                                <option value="0">F</option>
+                            </select>
+                        </div>
+                        <div class="overflow-hidden overflow-y-scroll mt-4" style="height: 500px;" id="display-table-subject">
+                            <table class="table table-borderedless">
+                                <thead class="table-dark">
+                                <tr class="fs-4">
+                                    <th>RollNo</th>
+                                    <th>Marks</th>
+                                </tr>
+                                </thead>
+                                <tbody id="score-body-subject" class="fs-4"></tbody>
+                            </table>
+                        </div>
+                        <div id="no-records" class="text-danger" style="display: none;">
+                            <span>No One With This Grade</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="creator" style="display: none;" class="mt-4">
+                <div class="row g-4">
+            <!-- Marks Guide -->
+            <div class="col-md-4 col-12 order-1 order-md-1 text-center">
+                <div class="p-3 border rounded shadow-sm h-100">
+                <h3 class="mb-3">Marks Guide</h3>
+                <ul class="list-unstyled text-start">
+                    <li class="mb-2">• View your marks for each semester.</li>
+                    <li class="mb-2">• Check your CGPA and percentage.</li>
+                    <li class="mb-2">• You can View 🥇 Gold Medal appended to Students Who achieved it(After 4-2 results you can view).</li>
+                    <li class="mb-2">• View SGPA for selected semesters.</li>
+                    <li class="mb-2">• Visualize all SGPAs on a line graph.</li>
+                    <li class="mb-2">
+                    • If you have failed subjects, you can estimate CGPA, percentage, and SGPAs for each semester.
+                    <br />
+                    <span class="fw-bold">Just click the "Estimate" checkbox.</span>
+                    </li>
+                    <li class="mb-2">
+                    • To view full subject names, click
+                    <button class="btn btn-sm btn-primary" type="button" onclick="javascript:return null;">Subjects ?</button>
+                    in the Marks section.
+                    </li>
+                </ul>
+                </div>
+            </div>
+
+            <!-- Created By -->
+            <div class="col-md-4 col-12 order-3 order-md-2 d-flex justify-content-center align-items-stretch text-center">
+            <div class="p-3 border rounded shadow-sm d-flex flex-column justify-content-between w-100">
+                
+                <!-- Top Section -->
+                <div>
+                <h1 class="mt-2 mb-3">Created By <span class="d-none d-md-inline-block">&#8595;</span></h1>
+                <p class="mb-0 d-block d-md-none fs-1 fw-bolder">A4</p>
+                </div>
+                
+                <!-- Spacer (empty, nothing in between) -->
+                <div class="flex-grow-1"></div>
+                
+                <!-- Bottom Section -->
+                <div>
+                <p class="mb-0">ALL RIGHTS RESERVED TO GOD</p>
+                </div>
+                
+            </div>
+            </div>
+
+
+            <!-- Analytics Guide -->
+            <div class="col-md-4 col-12 order-2 order-md-3 text-center">
+                <div class="p-3 border rounded shadow-sm h-100">
+                <h3 class="mb-3">Analytics Guide</h3>
+                <ul class="list-unstyled text-start">
+                    <li class="mb-2">• On mobile, click the "Show Graph" checkbox to display graphs and subject operations.</li>
+                    <li class="mb-2">• Select a branch and semester to view details.</li>
+                    <li class="mb-2">• Choosing "All Branches" and "All Semesters" shows CGPA of all students and ranks them.</li>
+                    <li class="mb-2">• You can View 🥇 Gold Medal appended to Students Who achieved it(After 4-2 results you can view).</li>
+                    <li class="mb-2">• Search using roll number or CGPA to view your rank.</li>
+                    <li class="mb-2">• Graph mode shows pass/fail statistics by subject for the selected branch and semester.</li>
+                    <li class="mb-2">• You can filter results by section(s).</li>
+                    <li class="mb-2">• Select specific subjects to see grades and pass/fail breakdowns.</li>
+                    <li class="mb-2">• Selecting a subject shows students with specific grades from selected sections.</li>
+                    <li class="mb-2">
+                    • To view full subject names, click
+                    <button class="btn btn-sm btn-primary" type="button" onclick="javascript:return null;">Subjects ?</button>
+                    in the Analytics section.
+                    </li>
+                </ul>
+                </div>
+            </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
